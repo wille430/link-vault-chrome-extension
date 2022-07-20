@@ -44,8 +44,13 @@ export class MessageHandler {
       return true;
     }
 
-    func(...args);
-    return true;
+    try {
+      func(...args);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   };
 }
 
