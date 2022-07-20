@@ -1,0 +1,4 @@
+export enum LinkAction {
+  CREATE_LISTING = "CREATE_LISTING",
+  GET_LISTINGS = "GET_LISTINGS",
+}

@@ -9,7 +9,7 @@
         "scripting"
     ],
     "action": {
-        "default_popup": "index.html"
+        "default_popup": "Popup.html"
     },
     "host_permissions": [
         "http://localhost:8080/*"

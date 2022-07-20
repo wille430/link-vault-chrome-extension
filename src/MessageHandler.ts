@@ -1,22 +1,20 @@
 import { CrudAction } from "./types/CrudAction";
 
-export type Message<T extends Resource, K = any> = {
-  action: ResourceAction<T>;
+export type ActionType = string;
+
+export type Message<K = any> = {
+  action: ActionType;
   payload: K;
 };
 
-export type OnMessageCallback<T extends Resource> = (
-  message: Message<T, any>,
+export type OnMessageCallback<T> = (
+  message: Message<T>,
   sender: chrome.runtime.MessageSender,
   sendResponse: (response?: any) => void
 ) => void;
 
-export type Resource = "Link" | "User" | "AuthUser";
-export type ResourceAction<T extends Resource> = `${T}${CrudAction}`;
-
-export class MessageHandler<T extends Resource> {
-  actionCallbackMap: Partial<Record<ResourceAction<T>, OnMessageCallback<T>>> =
-    {};
+export class MessageHandler {
+  actionCallbackMap: Partial<Record<ActionType, OnMessageCallback<any>>> = {};
 
   constructor() {
     this.addListener();
@@ -26,16 +24,17 @@ export class MessageHandler<T extends Resource> {
     process.env.NODE_ENV === "development" && console.log(...args);
   }
 
-  addCase(action: ResourceAction<T>, callback: OnMessageCallback<T>) {
+  addCase<T extends string>(action: T, callback: OnMessageCallback<any>) {
     this.log(`[MessageHandler]: Adding case ${action}`);
     this.actionCallbackMap[action] = callback;
+    return this;
   }
 
   addListener() {
     chrome.runtime.onMessage.addListener(this.handleMessage);
   }
 
-  handleMessage: OnMessageCallback<T> = (...args) => {
+  handleMessage: OnMessageCallback<any> = (...args) => {
     const [msg] = args;
     console.log(`[${__filename}] Responding to action: ${msg.action}`);
 
@@ -49,3 +48,14 @@ export class MessageHandler<T extends Resource> {
     return true;
   };
 }
+
+export type MessageHandlerBuilder = (builder: MessageHandler) => void;
+
+export type CreateMessageOptions = {
+  builder: MessageHandlerBuilder;
+};
+
+export const createMessageHandler = (options: CreateMessageOptions) => {
+  const messageHandler = new MessageHandler();
+  options.builder(messageHandler);
+};

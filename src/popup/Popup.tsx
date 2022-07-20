@@ -1,32 +1,22 @@
-import { BsPlus } from "react-icons/bs";
-import { useQuery } from "@tanstack/react-query";
+import { CreateLinkButton } from "./components/CreateLinkButton";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
 import { ILink } from "../types/ILink";
 import { Message } from "../MessageHandler";
+import { render } from "react-dom";
+import "./Popup.scss";
+import { List } from "./components/List";
+import { LinkAction } from "../types/Actions";
 
-export const Popup = () => {
-  const handleClick = async () => {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-    if (!tab.id || !tab.url) return;
-
-    chrome.runtime.sendMessage(
-      {
-        action: "LinkCreate",
-        payload: {
-          url: tab.url,
-        },
-      },
-      (res) => {
-        console.log(res);
-      }
-    );
-  };
-
+const Popup = () => {
   const fetchLinks = async () => {
     return new Promise<ILink[]>((resolve) => {
-      chrome.runtime.sendMessage<Message<"Link">, ILink[]>(
+      chrome.runtime.sendMessage<Message>(
         {
-          action: "LinkRead",
+          action: LinkAction.GET_LISTINGS,
           payload: null,
         },
         (res) => {
@@ -36,20 +26,25 @@ export const Popup = () => {
     });
   };
 
-  const { data } = useQuery(["links"], fetchLinks);
+  const { data, isLoading, error } = useQuery(["links"], fetchLinks);
 
   return (
-    <div className="p-3">
-      <button
-        id="changeColor"
-        className="btn btn-primary"
-        onClick={handleClick}
-      >
-        <BsPlus width="6rem" height="6rem" />
-      </button>
-      {data?.map((x) => (
-        <h1>{x.url}</h1>
-      ))}
-    </div>
+    <main className="p-2 d-flex flex-column gap-2 overflow-hidden bg-dark">
+      <CreateLinkButton />
+      {isLoading ? (
+        <span className="text-white center flex-grow-1">Loading...</span>
+      ) : error ? (
+        <span className="text-white center flex-grow-1">An error occurred</span>
+      ) : (
+        <div className="overflow-auto">{data && <List links={data} />}</div>
+      )}
+    </main>
   );
 };
+
+render(
+  <QueryClientProvider client={new QueryClient()}>
+    <Popup />
+  </QueryClientProvider>,
+  document.getElementById("root")
+);
