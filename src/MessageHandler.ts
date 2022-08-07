@@ -1,5 +1,3 @@
-import { CrudAction } from "./types/CrudAction";
-
 export type ActionType = string;
 
 export type Message<K = any> = {
@@ -17,7 +15,7 @@ export class MessageHandler {
   actionCallbackMap: Partial<Record<ActionType, OnMessageCallback<any>>> = {};
 
   constructor() {
-    this.addListener();
+    this.updateListener();
   }
 
   log(...args: Parameters<typeof console.log>) {
@@ -27,10 +25,11 @@ export class MessageHandler {
   addCase<T extends string>(action: T, callback: OnMessageCallback<any>) {
     this.log(`[MessageHandler]: Adding case ${action}`);
     this.actionCallbackMap[action] = callback;
+    this.updateListener();
     return this;
   }
 
-  addListener() {
+  updateListener() {
     chrome.runtime.onMessage.addListener(this.handleMessage);
   }
 

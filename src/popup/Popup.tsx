@@ -21,7 +21,7 @@ const Popup = () => {
         },
         (res) => {
           const lastError = chrome.runtime.lastError;
-          console.log(lastError);
+
           if (lastError) {
             reject(lastError);
           } else {
@@ -37,10 +37,10 @@ const Popup = () => {
   return (
     <main className="p-2 d-flex flex-column gap-2 overflow-hidden bg-dark">
       <CreateLinkButton />
-      {!data ? (
-        <span className="text-white center flex-grow-1">Loading...</span>
-      ) : error ? (
+      {error ? (
         <span className="text-white center flex-grow-1">An error occurred</span>
+      ) : !data || isLoading ? (
+        <span className="text-white center flex-grow-1">Loading...</span>
       ) : (
         <div className="overflow-auto">{data && <List links={data} />}</div>
       )}
