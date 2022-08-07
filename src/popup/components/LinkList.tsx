@@ -2,11 +2,11 @@ import moment from "moment";
 import { ILink } from "../../types/ILink";
 import capitalize from "lodash/capitalize";
 
-export type ListProps = {
+export type LinkListProps = {
   links: ILink[];
 };
 
-export const List = ({ links }: ListProps) => {
+export const LinkList = ({ links }: LinkListProps) => {
   const sortByRecent = (
     { createdAt }: ILink,
     { createdAt: createdAtB }: ILink
@@ -17,7 +17,7 @@ export const List = ({ links }: ListProps) => {
     <table className="table table-dark table-striped">
       <tbody>
         {links.sort(sortByRecent).map((link) => (
-          <tr>
+          <tr key={link.id}>
             <td className="d-flex flex-column">
               <a
                 className="text-truncate"

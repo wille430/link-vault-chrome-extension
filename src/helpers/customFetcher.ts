@@ -3,7 +3,7 @@ import { createHeaders } from "./createHeaders";
 
 export const customFetcher = async (
   url: string,
-  options: Parameters<typeof fetch>[1] & { _retry?: boolean }
+  options: Parameters<typeof fetch>[1] & { _retry?: boolean } = {}
 ): Promise<any> => {
   if (!options) options = {};
 
