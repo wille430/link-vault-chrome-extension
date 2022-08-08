@@ -1,26 +1,26 @@
-import { BsPlus } from "react-icons/bs";
-import { useNavigate, useParams } from "react-router";
+import { BsPlus } from 'react-icons/bs'
+import { useNavigate, useParams } from 'react-router'
 
 export const CreateLinkButton = () => {
-  const navigate = useNavigate();
-  const { colId } = useParams();
+    const navigate = useNavigate()
+    const { colId } = useParams()
 
-  const handleClick = async () => {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const handleClick = async () => {
+        let [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
 
-    if (!tab.id || !tab.url) return;
+        if (!tab.id || !tab.url) return
 
-    navigate(`/${colId}/new`, {
-      state: {
-        url: tab.url,
-        title: tab.title,
-      },
-    });
-  };
+        navigate(`/${colId}/new`, {
+            state: {
+                url: tab.url,
+                title: tab.title,
+            },
+        })
+    }
 
-  return (
-    <button className="btn btn-primary container" onClick={handleClick}>
-      <BsPlus />
-    </button>
-  );
-};
+    return (
+        <button className='btn btn-primary container' onClick={handleClick}>
+            <BsPlus />
+        </button>
+    )
+}

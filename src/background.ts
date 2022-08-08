@@ -1,5 +1,5 @@
-import { createMessageHandler } from "./MessageHandler";
+import { createMessageHandler } from './MessageHandler'
 
 createMessageHandler({
-  builder: (builder) => {},
-});
+    builder: (builder) => {},
+})
