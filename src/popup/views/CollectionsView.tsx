@@ -5,7 +5,6 @@ import { useLocation, useNavigate } from "react-router";
 import { customFetcher } from "../../helpers/customFetcher";
 import { ICollection } from "../../types/ICollection";
 import { CollectionList } from "../components/CollectionList";
-import { CreateLinkViewState } from "./CreateLinkView";
 
 export type CollectionsViewState = {
   //   When undefined, clicking on collections will open them
@@ -20,7 +19,7 @@ export const CollectionsView = () => {
   const { data, error, isLoading } = useQuery(["collections"], () =>
     customFetcher("/collections")
   );
-  const results: ICollection[] | undefined = data?.results;
+  const results = data?.results as ICollection[];
 
   useEffect(() => {
     const handleClick = () => {
