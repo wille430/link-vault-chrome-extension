@@ -60,6 +60,8 @@ export const CollectionsView = () => {
 
   return (
     <section className="d-flex flex-column flex-grow-1 overflow-auto">
+      <h4 className="mt-2">My Collections</h4>
+
       {error ? (
         <span className="text-white center flex-grow-1">An error occurred</span>
       ) : !results || isLoading ? (
@@ -75,16 +77,25 @@ export const CollectionsView = () => {
         )
       )}
 
-      <button
-        onClick={() =>
-          navigate(location.pathname, {
-            state: { mode: "select" } as CollectionsViewState,
-          })
-        }
-        className="btn btn-primary container"
-      >
-        <BsPlus />
-      </button>
+      <div className="d-flex gap-2">
+        <button
+          onClick={() =>
+            navigate(location.pathname, {
+              state: { mode: "select" } as CollectionsViewState,
+            })
+          }
+          className="btn btn-primary flex-grow-1 btn-sm"
+        >
+          <BsPlus /> Add from Tab
+        </button>
+
+        <button
+          onClick={() => navigate("/new")}
+          className="btn btn-secondary btn-sm"
+        >
+          <BsPlus /> Collection
+        </button>
+      </div>
 
       {state.mode === "select" && (
         <span className="text-center pt-2 text-muted">

@@ -1,10 +1,10 @@
 import { API_URL } from "../constants";
 import { createHeaders } from "./createHeaders";
 
-export const customFetcher = async (
+export const customFetcher = async <T = any>(
   url: string,
   options: Parameters<typeof fetch>[1] & { _retry?: boolean } = {}
-): Promise<any> => {
+): Promise<T> => {
   if (!options) options = {};
 
   options.headers = {

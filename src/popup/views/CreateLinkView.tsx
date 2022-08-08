@@ -1,8 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useMemo } from "react";
 import { BsPlus } from "react-icons/bs";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { customFetcher } from "../../helpers/customFetcher";
+import { ICollection } from "../../types/ICollection";
 import { BackButton } from "../components/BackButton";
 
 export type CreateLinkViewState = {
@@ -22,9 +24,18 @@ export const CreateLinkView = () => {
     element.style.height = element.scrollHeight + 2 + "px";
   };
 
+  const { data: collection } = useQuery(["collections", colId], () =>
+    customFetcher<ICollection>(`/collections/${colId}`)
+  );
+
   return (
     <section className="flex-grow-1 flex-column d-flex overflow-hidden">
       <BackButton backTo={`/${colId}`} />
+
+      <h4 className="mb-0 mt-2">
+        Add a link to{" "}
+        <span className="text-primary">{collection?.name ?? "---"}</span>
+      </h4>
 
       <Formik
         initialValues={{

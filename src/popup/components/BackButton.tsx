@@ -7,7 +7,7 @@ export const BackButton = ({ backTo }: { backTo: string }) => {
   };
 
   return (
-    <span role="button" onClick={handleClick}>
+    <span role="button" className="text-primary" onClick={handleClick}>
       Back
     </span>
   );
