@@ -1,4 +1,4 @@
-import './Popup.scss'
+import './popup.scss'
 import { Route, Routes } from 'react-router'
 import { LinksView } from './views/LinksView'
 import { CollectionsView } from './views/CollectionsView'

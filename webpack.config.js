@@ -8,7 +8,7 @@ const { merge } = require('lodash')
 const baseConfig = {
 
     entry: {
-        popup: './src/popup/index.tsx',
+        popup: './src/popup/Index.tsx',
     },
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -21,11 +21,15 @@ const baseConfig = {
                     from: 'public/manifest.json',
                     to: './manifest.json',
                 },
+                {
+                    from: 'public/images/',
+                    to: 'images/'
+                }
             ],
         }),
         new HtmlWebpackPlugin({
-            template: 'src/popup/Popup.html',
-            filename: 'Popup.html',
+            template: 'src/popup/popup.html',
+            filename: 'popup.html',
         }),
         new MiniCssExtractPlugin({
             filename: 'static/css/[name].css',
@@ -77,7 +81,7 @@ const createConfig = () => {
         config.plugins.push(
             new ExtensionReloader({
                 entries: {
-                    popup: './src/popup/index.tsx',
+                    popup: './src/popup/Index.tsx',
                 },
                 reloadPage: true,
             }),

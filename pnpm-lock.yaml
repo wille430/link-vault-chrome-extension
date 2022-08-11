@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@buttercup/dropbox-client': ^1.0.0
   '@popperjs/core': ^2.11.5
   '@tanstack/react-query': ^4.0.5
   '@testing-library/jest-dom': ^5.16.4
@@ -42,6 +43,7 @@ specifiers:
   webpack-ext-reloader: ^1.1.9
 
 dependencies:
+  '@buttercup/dropbox-client': 1.0.0
   '@popperjs/core': 2.11.5
   '@tanstack/react-query': 4.0.5_biqbaboplfbrettd7655fr4n2y
   '@testing-library/jest-dom': 5.16.4
@@ -1462,6 +1464,13 @@ packages:
 
   /@bcoe/v8-coverage/0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+    dev: false
+
+  /@buttercup/dropbox-client/1.0.0:
+    resolution: {integrity: sha512-5Ap2kBP0AWbHdmSEA4T6/f/jkVWWeQ9AFt/FoXgHzjDBlFT7GTBVFMQXcG5Iz9Kvg4cjT/AAMeoBZ3uYe9QfiA==}
+    dependencies:
+      cowl: 1.1.0
+      hot-patcher: 0.5.0
     dev: false
 
   /@csstools/normalize.css/12.0.0:
@@ -3595,7 +3604,6 @@ packages:
 
   /caseless/0.12.0:
     resolution: {integrity: sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==}
-    dev: true
 
   /chalk/2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -3894,6 +3902,17 @@ packages:
       parse-json: 5.2.0
       path-type: 4.0.0
       yaml: 1.10.2
+
+  /cowl/1.1.0:
+    resolution: {integrity: sha512-J0wGnJCteX/rJbELUEO9H1VYpj8bsWCDuKrscI/wqH5pxLarm+if84+hpTrCqbQ/C01LGIUPCQ8Ke/ZAXk/EYg==}
+    dependencies:
+      caseless: 0.12.0
+      get-headers: 1.0.5
+      is-in-browser: 1.1.3
+      layerr: 0.1.2
+      query-string: 7.1.1
+      xhr2: 0.2.1
+    dev: false
 
   /cross-env/7.0.3:
     resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
@@ -5352,6 +5371,10 @@ packages:
     engines: {node: 6.* || 8.* || >= 10.*}
     dev: false
 
+  /get-headers/1.0.5:
+    resolution: {integrity: sha512-Lg9jWebeqZt4HLXYxR99hO5Oiot3J5cP9sLUvidsLwav5dspWsI+BJfAr/rY5FT1FkadpL1FQYuiQ1Yo8L0N5w==}
+    dev: false
+
   /get-intrinsic/1.1.2:
     resolution: {integrity: sha512-Jfm3OyCxHh9DJyc28qGk+JmfkpO41A4XkneDSujN9MDXrm4oDKdHvndhZ2dN94+ERNfkYJWDclW6k2L/ZGHjXA==}
     dependencies:
@@ -5562,6 +5585,10 @@ packages:
   /hoopy/0.1.4:
     resolution: {integrity: sha512-HRcs+2mr52W0K+x8RzcLzuPPmVIKMSv97RGHy0Ea9y/mpcaK+xTrjICA04KAHi4GRzxliNqNJEFYWHghy3rSfQ==}
     engines: {node: '>= 6.0.0'}
+    dev: false
+
+  /hot-patcher/0.5.0:
+    resolution: {integrity: sha512-2Uu2W0s8+dnqXzdlg0MRsRzPoDCs1wVjOGSyMRRaMzLDX4bgHw6xDYKccsWafXPPxQpkQfEjgW6+17pwcg60bw==}
     dev: false
 
   /hpack.js/2.1.6:
@@ -5896,6 +5923,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       is-extglob: 2.1.1
+
+  /is-in-browser/1.1.3:
+    resolution: {integrity: sha512-FeXIBgG/CPGd/WUxuEyvgGTEfwiG9Z4EKGxjNMRqviiIIfsmgrpnHLffEDdwUHqNva1VEW91o3xBT/m8Elgl9g==}
+    dev: false
 
   /is-module/1.0.0:
     resolution: {integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==}
@@ -6792,6 +6823,10 @@ packages:
     resolution: {integrity: sha512-qJhlO9cGXi6hBGKoxEG/sKZDAHD5Hnu9Hs4WbOY3pCWXDhw0N8x1NenNzm2EnNLkLkk7J2SdxAkDSbb6ftT+UQ==}
     dependencies:
       language-subtag-registry: 0.3.22
+    dev: false
+
+  /layerr/0.1.2:
+    resolution: {integrity: sha512-ob5kTd9H3S4GOG2nVXyQhOu9O8nBgP555XxWPkJI0tR0JeRilfyTp8WtPdIJHLXBmHMSdEq5+KMxiYABeScsIQ==}
     dev: false
 
   /leven/3.1.0:
@@ -10577,6 +10612,11 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  /xhr2/0.2.1:
+    resolution: {integrity: sha512-sID0rrVCqkVNUn8t6xuv9+6FViXjUVXq8H5rWOH2rz9fDNQEd4g0EA2XlcEdJXRz5BMEn4O1pJFdT+z4YHhoWw==}
+    engines: {node: '>= 6'}
+    dev: false
 
   /xml-name-validator/3.0.0:
     resolution: {integrity: sha512-A5CUptxDsvxKJEU3yO6DuWBSJz/qizqzJKOMIfUJHETbBw/sFaDxgd6fxm1ewUaM0jZ444Fc5vC5ROYurg/4Pw==}

@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@buttercup/dropbox-client": "^1.0.0",
         "@popperjs/core": "^2.11.5",
         "@tanstack/react-query": "^4.0.5",
         "@testing-library/jest-dom": "^5.16.4",

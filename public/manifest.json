@@ -2,14 +2,17 @@
     "name": "Link Vault",
     "description": "Save and organize links",
     "version": "1.0",
-    "manifest_version": 3,
+    "manifest_version": 2,
     "permissions": [
-        "activeTab"
+        "tabs"
     ],
-    "action": {
-        "default_popup": "Popup.html"
+    "browser_action": {
+        "default_popup": "popup.html"
     },
-    "host_permissions": [
-        "http://localhost:8080/*"
-    ]
+    "icons": {
+        "256": "images/link-vault-256.png",
+        "128": "images/link-vault-128.png",
+        "48": "images/link-vault-48.png",
+        "16": "images/link-vault-16.png"
+    }
 }
