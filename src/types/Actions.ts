@@ -1,9 +1,0 @@
-export enum LinkAction {
-    CREATE_LISTING = 'CREATE_LISTING',
-    GET_LISTINGS = 'GET_LISTINGS',
-}
-
-export enum CollectionAction {
-    CREATE_COLLECTION = 'CREATE_COLLECTION',
-    GET_COLLECTIONS = 'GET_COLLECTIONS',
-}

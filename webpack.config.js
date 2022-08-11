@@ -7,8 +7,8 @@ const ExtensionReloader = require('webpack-ext-reloader')
 module.exports = {
     mode: 'development',
     entry: {
-        popup: './src/popup/Popup.tsx',
-        background: './src/background.ts',
+        popup: './src/popup/index.tsx',
+        background: './src/background/index.ts',
     },
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -33,8 +33,8 @@ module.exports = {
         }),
         new ExtensionReloader({
             entries: {
-                background: './src/background.ts',
-                popup: './src/popup/Popup.tsx',
+                background: './src/background/index.ts',
+                popup: './src/popup/index.tsx',
             },
             reloadPage: true,
         }),

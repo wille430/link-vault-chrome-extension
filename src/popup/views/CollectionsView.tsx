@@ -16,7 +16,7 @@ export const CollectionsView = () => {
     const location = useLocation()
     const state = (location.state as CollectionsViewState) ?? {}
 
-    const { data, error, isLoading } = useQuery(['collections'], () =>
+    const { data, error, isLoading } = useQuery<any, any>(['collections'], () =>
         customFetcher('/collections')
     )
     const results = data?.results as ICollection[]
@@ -63,7 +63,11 @@ export const CollectionsView = () => {
             <h4 className='mt-2'>My Collections</h4>
 
             {error ? (
-                <span className='text-white center flex-grow-1'>An error occurred</span>
+                <span className='text-white center flex-grow-1 px-4 text-center'>
+                    {error.message === 'Failed to fetch'
+                        ? 'Could not establish a connection to the server'
+                        : 'An error occurred'}
+                </span>
             ) : !results || isLoading ? (
                 <span className='text-white center flex-grow-1'>Loading...</span>
             ) : (
