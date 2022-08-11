@@ -9,7 +9,6 @@ const baseConfig = {
 
     entry: {
         popup: './src/popup/index.tsx',
-        background: './src/background/index.ts',
     },
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -78,7 +77,6 @@ const createConfig = () => {
         config.plugins.push(
             new ExtensionReloader({
                 entries: {
-                    background: './src/background/index.ts',
                     popup: './src/popup/index.tsx',
                 },
                 reloadPage: true,

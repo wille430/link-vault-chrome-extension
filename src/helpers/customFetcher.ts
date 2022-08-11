@@ -1,5 +1,4 @@
 import { API_URL } from '../constants'
-import { createHeaders } from './createHeaders'
 
 export const customFetcher = async <T = any>(
     url: string,
@@ -9,7 +8,7 @@ export const customFetcher = async <T = any>(
 
     options.headers = {
         ...options.headers,
-        ...(await createHeaders()),
+        'Content-Type': 'application/json',
     }
 
     return fetch(new URL(url, API_URL), options).then(async (res) => res.json())
