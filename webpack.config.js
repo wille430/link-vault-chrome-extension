@@ -3,9 +3,10 @@ const CopyPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ExtensionReloader = require('webpack-ext-reloader')
+const { merge } = require('lodash')
 
-module.exports = {
-    mode: 'development',
+const baseConfig = {
+
     entry: {
         popup: './src/popup/index.tsx',
         background: './src/background/index.ts',
@@ -30,13 +31,6 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: 'static/css/[name].css',
             chunkFilename: '[id].css',
-        }),
-        new ExtensionReloader({
-            entries: {
-                background: './src/background/index.ts',
-                popup: './src/popup/index.tsx',
-            },
-            reloadPage: true,
         }),
     ],
     module: {
@@ -75,3 +69,24 @@ module.exports = {
     },
     devtool: 'cheap-module-source-map',
 }
+
+const createConfig = () => {
+    const config = baseConfig;
+
+    if (Boolean(process.env.WATCH) === true) {
+        config.mode = "development"
+        config.plugins.push(
+            new ExtensionReloader({
+                entries: {
+                    background: './src/background/index.ts',
+                    popup: './src/popup/index.tsx',
+                },
+                reloadPage: true,
+            }),
+        )
+    }
+
+    return config
+}
+
+module.exports = createConfig()

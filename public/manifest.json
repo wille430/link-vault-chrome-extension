@@ -4,17 +4,12 @@
     "version": "1.0",
     "manifest_version": 3,
     "permissions": [
-        "storage",
-        "activeTab",
-        "scripting"
+        "activeTab"
     ],
     "action": {
         "default_popup": "Popup.html"
     },
     "host_permissions": [
         "http://localhost:8080/*"
-    ],
-    "background": {
-        "service_worker": "./static/js/background.js"
-    }
+    ]
 }

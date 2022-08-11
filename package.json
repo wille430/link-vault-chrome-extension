@@ -27,9 +27,12 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "build": "webpack",
-        "dev": "rm -rf ./build/* && webpack --watch",
-        "test": "craco test"
+        "build": "npm run clean && webpack",
+        "dev": "npm run clean && WATCH=true webpack",
+        "test": "craco test",
+        "clean": "rm -rf build/* release/*",
+        "release": "npm run build && mkdir -p release release/chrome && npm run release:chrome",
+        "release:chrome": "zip -r release/chrome/extension.zip ./build"
     },
     "eslintConfig": {
         "extends": [
