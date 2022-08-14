@@ -1,10 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { BsPlus } from 'react-icons/bs'
 import { useLocation, useNavigate } from 'react-router'
-import { customFetcher } from '../../helpers/customFetcher'
-import { ICollection } from '../../types/ICollection'
-import { CollectionList } from '../components/CollectionList'
+import { SearchResults } from '../components/SearchResults'
 
 export type CollectionsViewState = {
     //   When undefined, clicking on collections will open them
@@ -15,11 +12,6 @@ export const CollectionsView = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const state = (location.state as CollectionsViewState) ?? {}
-
-    const { data, error, isLoading } = useQuery<any, any>(['collections'], () =>
-        customFetcher('/collections')
-    )
-    const results = data?.results as ICollection[]
 
     useEffect(() => {
         const handleClick = () => {
@@ -35,48 +27,11 @@ export const CollectionsView = () => {
         }
     }, [])
 
-    const handleItemClick = async (i: number) => {
-        if (!results) return
-
-        const col = results[i]
-        if (state.mode === 'select') {
-            let [tab] = await chrome.tabs.query({
-                active: true,
-                currentWindow: true,
-            })
-
-            if (!tab.id || !tab.url) return
-
-            navigate(`/${col.id}/new`, {
-                state: {
-                    url: tab.url,
-                    title: tab.title,
-                },
-            })
-        } else {
-            navigate(`/${col.id}`)
-        }
-    }
-
     return (
         <section className='d-flex flex-column flex-grow-1 overflow-auto'>
             <h4 className='mt-2'>My Collections</h4>
 
-            {error ? (
-                <span className='text-white center flex-grow-1 px-4 text-center'>
-                    {error.message === 'Failed to fetch'
-                        ? 'Could not establish a connection to the server'
-                        : 'An error occurred'}
-                </span>
-            ) : !results || isLoading ? (
-                <span className='text-white center flex-grow-1'>Loading...</span>
-            ) : (
-                results && (
-                    <div className='flex-grow-1'>
-                        <CollectionList onItemClick={handleItemClick} collections={results} />
-                    </div>
-                )
-            )}
+            <SearchResults />
 
             <div className='d-flex gap-2'>
                 <button

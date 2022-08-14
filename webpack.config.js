@@ -3,12 +3,12 @@ const CopyPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ExtensionReloader = require('webpack-ext-reloader')
-const { merge } = require('lodash')
 
 const baseConfig = {
 
     entry: {
         popup: './src/popup/Index.tsx',
+        background: './src/background/index.ts',
     },
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -82,6 +82,7 @@ const createConfig = () => {
             new ExtensionReloader({
                 entries: {
                     popup: './src/popup/Index.tsx',
+                    background: './src/background/index.ts',
                 },
                 reloadPage: true,
             }),

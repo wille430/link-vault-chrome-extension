@@ -16,5 +16,19 @@
         "jsx": "react-jsx",
         "skipDefaultLibCheck": true
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*"],
+    "references": [
+        {
+            "path": "./tsconfig.spec.json"
+        }
+    ],
+    "exclude": [
+        "node_modules",
+        "src/**/*.spec.ts",
+        "src/**/*.test.ts",
+        "src/**/*.test.tsx",
+        "src/**/*.spec.tsx",
+        "src/**/*.stories.ts",
+        "src/**/*.stories.tsx"
+    ]
 }
