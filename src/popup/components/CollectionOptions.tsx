@@ -1,6 +1,6 @@
 import { ButtonGroup, Dropdown } from 'react-bootstrap'
 import { useNavigate } from 'react-router'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { deleteCollection } from '../../shared/actions/collectionActions'
 import { ICollection } from '../../shared/entities/ICollection'
 
@@ -12,16 +12,12 @@ export function CollectionOptions({ collection }: CollectionOptionsProps) {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
 
-    const deleteMut = useMutation(() => Promise.resolve(deleteCollection(collection.id)), {
-        onMutate: () => {
-            queryClient.setQueryData(['collections'], (old: any) => {
-                return {
-                    ...old,
-                    results: old.results.filter((x: ICollection) => x.id !== collection.id),
-                }
-            })
-        },
-    })
+    const handleDelete = () => {
+        deleteCollection(collection.id)
+        queryClient.setQueryData(['collections'], (old: any) => {
+            return old.filter((x: ICollection) => x.id !== collection.id)
+        })
+    }
 
     return (
         <Dropdown as={ButtonGroup} size='sm'>
@@ -35,11 +31,7 @@ export function CollectionOptions({ collection }: CollectionOptionsProps) {
                 <Dropdown.Item as='a' onClick={() => navigate(`/${collection.id}/edit`)}>
                     Edit
                 </Dropdown.Item>
-                <Dropdown.Item
-                    as='button'
-                    onClick={() => deleteMut.mutate()}
-                    disabled={deleteMut.isLoading}
-                >
+                <Dropdown.Item as='button' onClick={() => handleDelete()}>
                     Delete
                 </Dropdown.Item>
             </Dropdown.Menu>

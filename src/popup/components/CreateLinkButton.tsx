@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BsPlus } from 'react-icons/bs'
 import { useNavigate, useParams } from 'react-router'
 
@@ -6,7 +7,7 @@ export const CreateLinkButton = () => {
     const { colId } = useParams()
 
     const handleClick = async () => {
-        let [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
 
         if (!tab.id || !tab.url) return
 

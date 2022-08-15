@@ -8,7 +8,7 @@ import {
 } from '../constants'
 import axios from 'axios'
 import _ from 'lodash'
-import { getStorage } from '../../utils/getStorage'
+import { getStorage } from '../../shared/utils/storage'
 import { ApplicationData } from './LinkVault'
 
 export const initialAppData: ApplicationData = {
@@ -75,6 +75,17 @@ export class DropboxService {
         }
 
         return await this.client.getFileContents(DEFAULT_DATA_PATH)
+    }
+
+    async syncChanges(data: any) {
+        console.log(`[${DropboxService.name}] Syncing changes...`)
+        if (!this.client) {
+            throw new Error(
+                'Acccess token not set. Are you sure the authentication method has been called?'
+            )
+        }
+
+        await this.client.putFileContents(DEFAULT_DATA_PATH, JSON.stringify(data))
     }
 
     async refreshToken() {

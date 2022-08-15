@@ -4,4 +4,6 @@ const program = getLinkVault()
 window.LinkVault = program
 window.context = program.context
 
-program.loadData()
+program.loadData().then(async () => {
+    await program.syncCloud()
+})

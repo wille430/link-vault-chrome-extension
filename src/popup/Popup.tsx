@@ -13,6 +13,12 @@ export const Popup = () => {
         window.LinkVault.loadData().then(() => {
             setLoading(false)
         })
+
+        // Save before exit (not working)
+        window.onbeforeunload = async () => {
+            console.log(`[Popup] Exiting... Saving changes...`)
+            await window.context.saveAllChanges()
+        }
     }, [])
 
     return (

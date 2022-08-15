@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { IEntity } from '../../shared/entities/IEntity'
-import { getStorage } from '../../utils/getStorage'
+import { getStorage, setStorage } from '../../shared/utils/storage'
 import { DATA_KEY } from '../constants'
 import { getLinkVault } from '../services/LinkVault'
 
@@ -8,17 +8,13 @@ export class Repository<T extends IEntity> {
     collectionName: string
     data: T[]
 
-    private _nextId?: number | undefined
     private get nextId(): number {
-        if (!this._nextId) {
-            this._nextId = Math.max(...this.data.map((o) => o.id))
+        const maxId = Math.max(...this.data.map((o) => o.id))
+        if (maxId) {
+            return maxId + 1
         } else {
-            this._nextId = 0
+            return 0
         }
-        const ret = this._nextId
-        this._nextId += 1
-
-        return ret
     }
 
     constructor(collectionName: string) {
@@ -73,18 +69,14 @@ export class Repository<T extends IEntity> {
 
     delete(id: number) {
         const index = this.data.findIndex((o) => o.id === id)
-        this.data.splice(index + 1)
+        this.data.splice(index, 1)
     }
 
-    async saveAllChanges() {
-        const linkVault = getLinkVault()
-
-        const data = linkVault.getData()
-        linkVault.data = {
-            ...data,
-            [this.collectionName]: this.data,
-        }
-
-        await chrome.storage.local.set({ [DATA_KEY]: linkVault.data })
+    async saveAllChanges(sync: boolean = true) {
+        console.log(`[${Repository.name}(${this.collectionName})] Saving changes`)
+        await setStorage(`${DATA_KEY}.${this.collectionName}`, this.data)
+        // @ts-ignore
+        getLinkVault().data[this.collectionName] = this.data
+        sync && (await getLinkVault().syncCloud())
     }
 }

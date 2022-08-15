@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { ICollection } from '../../shared/entities/ICollection'
 import { ILink } from '../../shared/entities/ILink'
-import { getStorage } from '../../utils/getStorage'
+import { getStorage } from '../../shared/utils/storage'
 import { AppContext } from '../AppContext'
 import { DATA_KEY } from '../constants'
 import { DropboxService, initialAppData } from './DropboxService'
@@ -67,6 +67,16 @@ export class LinkVault {
         )
 
         await this.context.initialize()
+    }
+
+    private _syncCloudTimer = setTimeout(() => this._syncCloud.apply(this), 1000)
+    private async _syncCloud() {
+        console.log(`[LinkVault] Syncing changes with cloud...`)
+        await this.dropboxService.syncChanges(this.data)
+    }
+    async syncCloud() {
+        clearTimeout(this._syncCloudTimer)
+        this._syncCloudTimer = setTimeout(() => this._syncCloud.apply(this), 1000)
     }
 
     /**
