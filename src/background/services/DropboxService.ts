@@ -78,13 +78,15 @@ export class DropboxService {
     }
 
     async syncChanges(data: any) {
-        console.log(`[${DropboxService.name}] Syncing changes...`)
         if (!this.client) {
             throw new Error(
                 'Acccess token not set. Are you sure the authentication method has been called?'
             )
         }
 
+        console.log(
+            `[${DropboxService.name}] Writing ${JSON.stringify(data).length}B of data to Dropbox...`
+        )
         await this.client.putFileContents(DEFAULT_DATA_PATH, JSON.stringify(data))
     }
 

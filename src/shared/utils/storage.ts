@@ -2,17 +2,6 @@ import _ from 'lodash'
 
 export type NestedKeyPath = string
 
-export const getNestedObj = <T extends Record<any, any>>(obj: T, path: NestedKeyPath): any => {
-    let ret = { ...obj }
-    for (const subpath of path.split('/')) {
-        ret = ret[subpath]
-        if (ret == undefined) {
-            return undefined
-        }
-    }
-    return ret
-}
-
 export const getStorage = async (items: string | string[]) => {
     return await new Promise<{ [key: string]: any }>((resolve) => {
         chrome.storage.local.get(items, (data) => {

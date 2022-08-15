@@ -37,7 +37,12 @@ export class LinkVault {
         let data: ApplicationData
 
         const objString = await this.dropboxService.loadFile()
-        data = JSON.parse(objString)
+        try {
+            data = JSON.parse(objString)
+        } catch (e) {
+            // TODO: handle parse error
+            data = initialAppData
+        }
         console.log(`[${LinkVault.name}] Fetched ${objString.length}B of data from Dropbox`)
 
         const obj = await getStorage(DATA_KEY)

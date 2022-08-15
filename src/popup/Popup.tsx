@@ -7,13 +7,7 @@ import { CreateCollectionView } from './views/CreateCollectionView'
 import { useEffect, useState } from 'react'
 
 export const Popup = () => {
-    const [loading, setLoading] = useState(true)
-
     useEffect(() => {
-        window.LinkVault.loadData().then(() => {
-            setLoading(false)
-        })
-
         // Save before exit (not working)
         window.onbeforeunload = async () => {
             console.log(`[Popup] Exiting... Saving changes...`)
@@ -23,17 +17,13 @@ export const Popup = () => {
 
     return (
         <main className='bg-dark text-white p-2'>
-            {loading ? (
-                <span>Loading...</span>
-            ) : (
-                <Routes>
-                    <Route path='/' element={<CollectionsView />} />
-                    <Route path='/new' element={<CreateCollectionView />} />
-                    <Route path='/:colId' element={<LinksView />} />
-                    <Route path='/:colId/new' element={<CreateLinkView />} />
-                    <Route path='/:colId/edit' element={<CreateCollectionView editing />} />
-                </Routes>
-            )}
+            <Routes>
+                <Route path='/' element={<CollectionsView />} />
+                <Route path='/new' element={<CreateCollectionView />} />
+                <Route path='/:colId' element={<LinksView />} />
+                <Route path='/:colId/new' element={<CreateLinkView />} />
+                <Route path='/:colId/edit' element={<CreateCollectionView editing />} />
+            </Routes>
         </main>
     )
 }

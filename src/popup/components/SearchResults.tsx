@@ -1,14 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { ICollection } from '../../shared/entities/ICollection'
+import { useAppSelector } from '../hooks/reduxHooks'
 import { CollectionsViewState } from '../views/CollectionsView'
 import { CollectionList } from './CollectionList'
 
 export const SearchResults = () => {
+    const { isLoading: isLoadingCloud } = useAppSelector((state) => state.cloud)
     const {
         data: results,
         error,
         isLoading,
+        refetch,
     } = useQuery<ICollection[], any>(['collections'], () =>
         window.LinkVault.context.collections.getAll()
     )
@@ -16,6 +20,12 @@ export const SearchResults = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const state = (location.state as CollectionsViewState) ?? {}
+
+    useEffect(() => {
+        if (!isLoadingCloud) {
+            refetch()
+        }
+    }, [isLoadingCloud])
 
     const handleItemClick = async (i: number) => {
         if (!results) return
@@ -50,8 +60,12 @@ export const SearchResults = () => {
         )
     }
 
-    if (isLoading || !results) {
-        return <span className='text-white center flex-grow-1'>Loading...</span>
+    if (isLoading || isLoadingCloud || !results) {
+        return (
+            <div className='flex-grow-1'>
+                <CollectionList onItemClick={handleItemClick} />
+            </div>
+        )
     }
 
     if (!results.length) {

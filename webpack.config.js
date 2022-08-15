@@ -81,8 +81,8 @@ const createConfig = () => {
         config.plugins.push(
             new ExtensionReloader({
                 entries: {
-                    popup: './src/popup/Index.tsx',
-                    background: './src/background/index.ts',
+                    popup: 'popup',
+                    background: 'background',
                 },
                 reloadPage: true,
             }),

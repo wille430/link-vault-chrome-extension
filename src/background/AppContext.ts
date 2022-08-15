@@ -1,6 +1,5 @@
-import { ICollection } from '../shared/entities/ICollection'
-import { ILink } from '../shared/entities/ILink'
-import { COLLECTION_COLLECTION_NAME, LINK_COLLECTION_NAME } from './constants'
+import { CollectionsRepository } from './repositories/CollectionsRepository'
+import { LinksRepository } from './repositories/LinksRepository'
 import { Repository } from './repositories/Repository'
 import { getLinkVault } from './services/LinkVault'
 
@@ -16,12 +15,12 @@ export const interceptSave = <TArgs extends any[], T extends Repository<any>, R>
 }
 
 export class AppContext {
-    links: Repository<ILink>
-    collections: Repository<ICollection>
+    links: LinksRepository
+    collections: CollectionsRepository
 
     constructor() {
-        this.links = new Repository<ILink>(LINK_COLLECTION_NAME)
-        this.collections = new Repository<ICollection>(COLLECTION_COLLECTION_NAME)
+        this.links = new LinksRepository()
+        this.collections = new CollectionsRepository()
 
         return new Proxy(this, {
             get(target, prop, receiver) {

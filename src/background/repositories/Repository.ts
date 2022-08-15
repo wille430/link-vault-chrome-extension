@@ -9,8 +9,8 @@ export class Repository<T extends IEntity> {
     data: T[]
 
     private get nextId(): number {
-        const maxId = Math.max(...this.data.map((o) => o.id))
-        if (maxId) {
+        const maxId = Math.max(...this.data.map((o) => o.id ?? 0))
+        if (isFinite(maxId)) {
             return maxId + 1
         } else {
             return 0
@@ -46,12 +46,13 @@ export class Repository<T extends IEntity> {
     }
 
     create(entity: Omit<T, 'createdAt' | 'updatedAt' | 'id'>) {
-        this.data.push({
-            id: this.nextId,
+        const newEntity = {
+            ...entity,
             createdAt: new Date(),
             updatedAt: new Date(),
-            ...entity,
-        } as T)
+        } as T
+        newEntity.id = this.nextId
+        this.data.push(newEntity)
         return entity
     }
 
