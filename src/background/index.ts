@@ -1,3 +1,8 @@
+import { getLinkVault } from './services/LinkVault'
 import { startMessageListener } from './lib/messaging'
 
-startMessageListener()
+getLinkVault()
+    .loadData()
+    .then(() => {
+        startMessageListener()
+    })

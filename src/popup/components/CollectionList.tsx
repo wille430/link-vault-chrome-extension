@@ -1,4 +1,4 @@
-import { ICollection } from '../../types/ICollection'
+import { ICollection } from '../../shared/entities/ICollection'
 import { CollectionOptions } from './CollectionOptions'
 
 export type CollectionListProps = {

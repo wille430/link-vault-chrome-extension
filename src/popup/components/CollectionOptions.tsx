@@ -1,8 +1,8 @@
-import { ICollection } from '../../types/ICollection'
 import { ButtonGroup, Dropdown } from 'react-bootstrap'
 import { useNavigate } from 'react-router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { customFetcher } from '../../helpers/customFetcher'
+import { ICollection } from '../../shared/entities/ICollection'
 
 export type CollectionOptionsProps = {
     collection: ICollection

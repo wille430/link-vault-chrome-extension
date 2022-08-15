@@ -2,8 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { BsPlus } from 'react-icons/bs'
 import { useNavigate, useParams } from 'react-router'
-import { customFetcher } from '../../helpers/customFetcher'
+import { createCollection, getCollection, updateCollection } from '../../shared/actions'
+import { ICollection } from '../../shared/entities/ICollection'
 import { BackButton } from '../components/BackButton'
+import { sendMessage } from '../lib/sendMessage'
 
 export type CreateCollectionViewProps = {
     editing?: boolean
@@ -27,15 +29,9 @@ export const CreateCollectionView = ({ editing }: CreateCollectionViewProps) => 
                     setSubmitting(true)
 
                     if (editing && colId) {
-                        await customFetcher(`/collections/${colId}`, {
-                            method: 'PUT',
-                            body: JSON.stringify(values),
-                        })
+                        await sendMessage(updateCollection(values))
                     } else {
-                        await customFetcher('/collections', {
-                            method: 'POST',
-                            body: JSON.stringify(values),
-                        })
+                        await sendMessage(createCollection(values))
                     }
 
                     setSubmitting(false)
@@ -43,11 +39,11 @@ export const CreateCollectionView = ({ editing }: CreateCollectionViewProps) => 
                 }}
             >
                 {({ isSubmitting, setValues }) => {
-                    const { data: existingCollection } = useQuery(
+                    useQuery(
                         ['collections', colId],
                         () => {
                             if (editing && colId) {
-                                return customFetcher(`/collections/${colId}`)
+                                return sendMessage<ICollection>(getCollection(colId))
                             } else {
                                 return undefined
                             }
@@ -57,8 +53,8 @@ export const CreateCollectionView = ({ editing }: CreateCollectionViewProps) => 
                                 setValues((prev) => {
                                     const newValues: any = prev
                                     for (const [key, value] of Object.entries(prev)) {
-                                        if (!value) {
-                                            newValues[key] = col[key] ?? ''
+                                        if (!value && col) {
+                                            newValues[key] = col[key as keyof ICollection] ?? ''
                                         }
                                     }
                                     return newValues

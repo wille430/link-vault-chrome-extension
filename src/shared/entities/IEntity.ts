@@ -1,6 +1,5 @@
-export interface ICollection {
+export interface IEntity {
     id: number
-    name: string
     createdAt: Date
     updatedAt: Date
 }

@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import { ICollection } from '../../types/ICollection'
-import { ILink } from '../../types/ILink'
+import { ICollection } from '../../shared/entities/ICollection'
+import { ILink } from '../../shared/entities/ILink'
 import { getStorage } from '../../utils/getStorage'
 import { DATA_KEY } from '../constants'
 import { DropboxService } from './DropboxService'
@@ -26,15 +26,12 @@ export class LinkVault {
 
     constructor() {
         this.dropboxService = new DropboxService()
-        this.loadToStorage().then(() => {
-            console.log('Loaded data', this.data)
-        })
     }
 
     _overwrite = false
-    async loadToStorage() {
+    async loadData() {
         let data: ApplicationData
-        const objString = await this.dropboxService.getData()
+        const objString = await this.dropboxService.loadFile()
         data = JSON.parse(objString)
 
         const obj = await getStorage(DATA_KEY)
@@ -54,9 +51,30 @@ export class LinkVault {
         }
     }
 
-    async getData() {
-        if (!this.data) await this.loadToStorage()
+    /**
+     *
+     * @param path - Path to a nested object key. E.g. /users
+     * @returns
+     */
+    getData(path?: string) {
+        if (!this.data) {
+            throw new Error('Data has not been loaded yet!')
+        }
 
-        return this.data as ApplicationData
+        if (!path) {
+            return this.data as ApplicationData
+        }
+
+        let data: any = { ...this.data }
+
+        for (const key of path.split('/')) {
+            if (!data[key]) {
+                throw new Error('Invalid argument. Path does not exist.')
+            }
+
+            data = data[key]
+        }
+
+        return data
     }
 }

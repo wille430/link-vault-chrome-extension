@@ -1,4 +1,4 @@
-export interface Action {
+export interface Action<T = any> {
     type: string
-    payload?: Record<any, any> | undefined
+    payload?: T | undefined
 }

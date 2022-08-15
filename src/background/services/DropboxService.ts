@@ -6,10 +6,10 @@ import {
     DEFAULT_DATA_PATH,
     REDIRECT_URL,
 } from '../constants'
-import { ApplicationData } from './LinkVault'
 import axios from 'axios'
 import _ from 'lodash'
 import { getStorage } from '../../utils/getStorage'
+import { ApplicationData } from './LinkVault'
 
 export const initialAppData: ApplicationData = {
     links: [],
@@ -62,8 +62,7 @@ export class DropboxService {
         })
     }
 
-    async getData(): Promise<string> {
-        await this.authenticate()
+    async loadFile(): Promise<string> {
         if (!this.client) {
             throw new Error('Acccess token not set')
         }

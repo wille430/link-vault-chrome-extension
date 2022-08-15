@@ -3,8 +3,8 @@ import { CreateLinkButton } from '../components/CreateLinkButton'
 import { LinkList } from '../components/LinkList'
 import { customFetcher } from '../../helpers/customFetcher'
 import { useParams } from 'react-router'
-import { ILink } from '../../types/ILink'
 import { BackButton } from '../components/BackButton'
+import { ILink } from '../../shared/entities/ILink'
 
 export const LinksView = () => {
     const params = useParams()

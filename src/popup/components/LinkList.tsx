@@ -1,6 +1,6 @@
 import moment from 'moment'
-import { ILink } from '../../types/ILink'
 import capitalize from 'lodash/capitalize'
+import { ILink } from '../../shared/entities/ILink'
 
 export type LinkListProps = {
     links: ILink[]

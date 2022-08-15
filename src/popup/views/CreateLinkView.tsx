@@ -4,7 +4,7 @@ import { ChangeEvent, useMemo } from 'react'
 import { BsPlus } from 'react-icons/bs'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { customFetcher } from '../../helpers/customFetcher'
-import { ICollection } from '../../types/ICollection'
+import { ICollection } from '../../shared/entities/ICollection'
 import { BackButton } from '../components/BackButton'
 
 export type CreateLinkViewState = {
