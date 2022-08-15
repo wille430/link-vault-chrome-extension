@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
 import { CreateLinkButton } from '../components/CreateLinkButton'
 import { LinkList } from '../components/LinkList'
-import { customFetcher } from '../../helpers/customFetcher'
 import { useParams } from 'react-router'
 import { BackButton } from '../components/BackButton'
 import { ILink } from '../../shared/entities/ILink'
+import { getLinks } from '../../shared/actions/linkActions'
 
 export const LinksView = () => {
-    const params = useParams()
+    const { colId } = useParams()
 
-    const fetchLinks = async () => customFetcher(`/links?collectionId=${params.colId}`)
+    const fetchLinks = () => (colId ? getLinks(parseInt(colId)) : [])
 
     const { data, isLoading, error } = useQuery<ILink[]>(['links'], fetchLinks)
 

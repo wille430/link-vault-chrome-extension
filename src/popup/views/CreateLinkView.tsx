@@ -3,7 +3,8 @@ import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { ChangeEvent, useMemo } from 'react'
 import { BsPlus } from 'react-icons/bs'
 import { useLocation, useNavigate, useParams } from 'react-router'
-import { customFetcher } from '../../helpers/customFetcher'
+import { getCollection } from '../../shared/actions/collectionActions'
+import { createLink, getLinks } from '../../shared/actions/linkActions'
 import { ICollection } from '../../shared/entities/ICollection'
 import { BackButton } from '../components/BackButton'
 
@@ -25,7 +26,7 @@ export const CreateLinkView = () => {
     }
 
     const { data: collection } = useQuery(['collections', colId], () =>
-        customFetcher<ICollection>(`/collections/${colId}`)
+        getCollection(parseInt(colId as string))
     )
 
     return (
@@ -41,15 +42,12 @@ export const CreateLinkView = () => {
                     title: title ?? '',
                     url: url ?? '',
                     description: '',
-                    collectionId: colId,
+                    collectionId: colId ? parseInt(colId) : 0,
                 }}
                 onSubmit={async (values, { setSubmitting }) => {
                     setSubmitting(true)
 
-                    await customFetcher('/links', {
-                        method: 'POST',
-                        body: JSON.stringify(values),
-                    })
+                    createLink(values)
 
                     setSubmitting(false)
                     navigate(`/${colId}`)

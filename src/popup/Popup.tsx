@@ -4,13 +4,22 @@ import { LinksView } from './views/LinksView'
 import { CollectionsView } from './views/CollectionsView'
 import { CreateLinkView } from './views/CreateLinkView'
 import { CreateCollectionView } from './views/CreateCollectionView'
-import { Provider } from 'react-redux'
-import { store } from './store'
+import { useEffect, useState } from 'react'
 
 export const Popup = () => {
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        window.LinkVault.loadData().then(() => {
+            setLoading(false)
+        })
+    }, [])
+
     return (
-        <Provider store={store}>
-            <main className='bg-dark text-white p-2'>
+        <main className='bg-dark text-white p-2'>
+            {loading ? (
+                <span>Loading...</span>
+            ) : (
                 <Routes>
                     <Route path='/' element={<CollectionsView />} />
                     <Route path='/new' element={<CreateCollectionView />} />
@@ -18,7 +27,7 @@ export const Popup = () => {
                     <Route path='/:colId/new' element={<CreateLinkView />} />
                     <Route path='/:colId/edit' element={<CreateCollectionView editing />} />
                 </Routes>
-            </main>
-        </Provider>
+            )}
+        </main>
     )
 }

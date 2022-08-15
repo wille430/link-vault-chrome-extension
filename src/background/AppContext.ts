@@ -11,4 +11,12 @@ export class AppContext {
         this.links = new Repository<ILink>(LINK_COLLECTION_NAME)
         this.collections = new Repository<ICollection>(COLLECTION_COLLECTION_NAME)
     }
+
+    async initialize() {
+        await Promise.allSettled([this.links.loadData(), this.collections.loadData()])
+    }
+
+    async saveAllChanges() {
+        await Promise.allSettled([this.links.saveAllChanges(), this.collections.saveAllChanges()])
+    }
 }

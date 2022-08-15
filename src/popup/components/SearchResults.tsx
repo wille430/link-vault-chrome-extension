@@ -1,8 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useLocation, useNavigate } from 'react-router'
-import { getCollections } from '../../shared/actions'
 import { ICollection } from '../../shared/entities/ICollection'
-import { sendMessage } from '../lib/sendMessage'
 import { CollectionsViewState } from '../views/CollectionsView'
 import { CollectionList } from './CollectionList'
 
@@ -11,7 +9,9 @@ export const SearchResults = () => {
         data: results,
         error,
         isLoading,
-    } = useQuery<ICollection[], any>(['collections'], () => sendMessage(getCollections()))
+    } = useQuery<ICollection[], any>(['collections'], () =>
+        window.LinkVault.context.collections.getAll()
+    )
 
     const navigate = useNavigate()
     const location = useLocation()

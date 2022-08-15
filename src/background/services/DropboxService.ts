@@ -64,7 +64,9 @@ export class DropboxService {
 
     async loadFile(): Promise<string> {
         if (!this.client) {
-            throw new Error('Acccess token not set')
+            throw new Error(
+                'Acccess token not set. Are you sure the authentication method has been called?'
+            )
         }
 
         const info = await this.client?.getInfo(DEFAULT_DATA_PATH).catch((e) => undefined)

@@ -4,9 +4,7 @@ import { ILink } from '../../shared/entities/ILink'
 import { getStorage } from '../../utils/getStorage'
 import { AppContext } from '../AppContext'
 import { DATA_KEY } from '../constants'
-import { registerEvents } from '../lib/messaging'
-import { DropboxService } from './DropboxService'
-import { MessageBusService } from './MessageBusService'
+import { DropboxService, initialAppData } from './DropboxService'
 
 export interface ApplicationData {
     collections: ICollection[]
@@ -26,23 +24,29 @@ export const getLinkVault = (): LinkVault => {
 export class LinkVault {
     dropboxService: DropboxService
     data?: ApplicationData
-    messageBuService: MessageBusService
     context: AppContext
 
     constructor() {
         this.dropboxService = new DropboxService()
-        this.messageBuService = new MessageBusService()
         this.context = new AppContext()
     }
 
     _overwrite = false
     async loadData() {
+        await this.dropboxService.authenticate()
         let data: ApplicationData
+
         const objString = await this.dropboxService.loadFile()
         data = JSON.parse(objString)
+        console.log(`[${LinkVault.name}] Fetched ${objString.length}B of data from Dropbox`)
 
         const obj = await getStorage(DATA_KEY)
-        const existingData = obj ? obj[DATA_KEY] : {}
+        const existingData = obj[DATA_KEY] ?? initialAppData
+        console.log(
+            `[${LinkVault.name}] Loaded ${
+                JSON.stringify(existingData).length
+            }B of existing data from localStorage`
+        )
 
         if (this._overwrite) {
             await chrome.storage.sync.set({
@@ -56,6 +60,13 @@ export class LinkVault {
             })
             this.data = _.merge(data, existingData)
         }
+        console.log(
+            `[${LinkVault.name}] Loaded ${
+                JSON.stringify(this.data).length
+            }B to memory after merge/overwrite with cloud`
+        )
+
+        await this.context.initialize()
     }
 
     /**
@@ -83,9 +94,5 @@ export class LinkVault {
         }
 
         return data
-    }
-
-    registerEvents() {
-        return registerEvents(this.messageBuService, this.context)
     }
 }

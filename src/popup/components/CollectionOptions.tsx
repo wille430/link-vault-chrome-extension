@@ -1,7 +1,7 @@
 import { ButtonGroup, Dropdown } from 'react-bootstrap'
 import { useNavigate } from 'react-router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { customFetcher } from '../../helpers/customFetcher'
+import { deleteCollection } from '../../shared/actions/collectionActions'
 import { ICollection } from '../../shared/entities/ICollection'
 
 export type CollectionOptionsProps = {
@@ -12,19 +12,16 @@ export function CollectionOptions({ collection }: CollectionOptionsProps) {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
 
-    const deleteMut = useMutation(
-        () => customFetcher(`/collections/${collection.id}`, { method: 'DELETE' }),
-        {
-            onMutate: () => {
-                queryClient.setQueryData(['collections'], (old: any) => {
-                    return {
-                        ...old,
-                        results: old.results.filter((x: ICollection) => x.id !== collection.id),
-                    }
-                })
-            },
-        }
-    )
+    const deleteMut = useMutation(() => Promise.resolve(deleteCollection(collection.id)), {
+        onMutate: () => {
+            queryClient.setQueryData(['collections'], (old: any) => {
+                return {
+                    ...old,
+                    results: old.results.filter((x: ICollection) => x.id !== collection.id),
+                }
+            })
+        },
+    })
 
     return (
         <Dropdown as={ButtonGroup} size='sm'>

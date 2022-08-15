@@ -2,10 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 import { ErrorMessage, Field, Form, Formik } from 'formik'
 import { BsPlus } from 'react-icons/bs'
 import { useNavigate, useParams } from 'react-router'
-import { createCollection, getCollection, updateCollection } from '../../shared/actions'
+import {
+    createCollection,
+    getCollection,
+    updateCollection,
+} from '../../shared/actions/collectionActions'
 import { ICollection } from '../../shared/entities/ICollection'
 import { BackButton } from '../components/BackButton'
-import { sendMessage } from '../lib/sendMessage'
 
 export type CreateCollectionViewProps = {
     editing?: boolean
@@ -25,13 +28,13 @@ export const CreateCollectionView = ({ editing }: CreateCollectionViewProps) => 
                 initialValues={{
                     name: '',
                 }}
-                onSubmit={async (values, { setSubmitting }) => {
+                onSubmit={(values, { setSubmitting }) => {
                     setSubmitting(true)
 
                     if (editing && colId) {
-                        await sendMessage(updateCollection(values))
+                        updateCollection({ id: parseInt(colId), ...values })
                     } else {
-                        await sendMessage(createCollection(values))
+                        createCollection(values)
                     }
 
                     setSubmitting(false)
@@ -43,7 +46,7 @@ export const CreateCollectionView = ({ editing }: CreateCollectionViewProps) => 
                         ['collections', colId],
                         () => {
                             if (editing && colId) {
-                                return sendMessage<ICollection>(getCollection(colId))
+                                return getCollection(parseInt(colId))
                             } else {
                                 return undefined
                             }
