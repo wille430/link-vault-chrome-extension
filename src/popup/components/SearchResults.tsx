@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { ICollection } from '../../shared/entities/ICollection'
 import { useAppSelector } from '../hooks/reduxHooks'
+import { getActiveTab } from '../utils/getActiveTab'
 import { CollectionsViewState } from '../views/CollectionsView'
 import { CollectionList } from './CollectionList'
 
@@ -32,10 +33,7 @@ export const SearchResults = () => {
 
         const col = results[i]
         if (state.mode === 'select') {
-            let [tab] = await chrome.tabs.query({
-                active: true,
-                currentWindow: true,
-            })
+            const tab = await getActiveTab()
 
             if (!tab.id || !tab.url) return
 
