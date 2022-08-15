@@ -34,8 +34,12 @@ export class Repository<T extends IEntity> {
         return this.data.find((o) => o.id === id)
     }
 
-    getAll() {
-        return this.data
+    getAll(filter?: Parameters<Array<T>['filter']>[0]) {
+        if (filter) {
+            return this.data.filter(filter)
+        } else {
+            return this.data
+        }
     }
 
     create(entity: Omit<T, 'createdAt' | 'updatedAt' | 'id'>) {

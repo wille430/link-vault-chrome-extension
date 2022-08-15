@@ -2,8 +2,11 @@ import _ from 'lodash'
 import { ICollection } from '../../shared/entities/ICollection'
 import { ILink } from '../../shared/entities/ILink'
 import { getStorage } from '../../utils/getStorage'
+import { AppContext } from '../AppContext'
 import { DATA_KEY } from '../constants'
+import { registerEvents } from '../lib/messaging'
 import { DropboxService } from './DropboxService'
+import { MessageBusService } from './MessageBusService'
 
 export interface ApplicationData {
     collections: ICollection[]
@@ -23,9 +26,13 @@ export const getLinkVault = (): LinkVault => {
 export class LinkVault {
     dropboxService: DropboxService
     data?: ApplicationData
+    messageBuService: MessageBusService
+    context: AppContext
 
     constructor() {
         this.dropboxService = new DropboxService()
+        this.messageBuService = new MessageBusService()
+        this.context = new AppContext()
     }
 
     _overwrite = false
@@ -76,5 +83,9 @@ export class LinkVault {
         }
 
         return data
+    }
+
+    registerEvents() {
+        return registerEvents(this.messageBuService, this.context)
     }
 }
