@@ -28,13 +28,14 @@ export const CollectionList = ({ collections, onItemClick }: CollectionListProps
                           .fill(null)
                           .map((o, i) => (
                               <tr key={i}>
-                                  <td>
-                                      <span className='text-secondary text-transparent rounded bg-secondary text-sm'>
-                                          SAMPLE TEXT SAMPLE
-                                      </span>
+                                  <td className='pt-2'>
+                                      <span
+                                          className='text-secondary rounded bg-secondary d-block'
+                                          style={{ width: '8rem', height: '0.7rem', opacity: 0.5 }}
+                                      ></span>
                                   </td>
 
-                                  <td></td>
+                                  <td style={{ color: 'transparent', userSelect: 'none' }}>TEXT</td>
                               </tr>
                           ))}
             </tbody>

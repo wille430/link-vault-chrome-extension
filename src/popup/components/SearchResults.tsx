@@ -3,30 +3,25 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { ICollection } from '../../shared/entities/ICollection'
 import { useAppSelector } from '../hooks/reduxHooks'
+import { useAppContext } from '../hooks/useAppContext'
 import { getActiveTab } from '../utils/getActiveTab'
 import { CollectionsViewState } from '../views/CollectionsView'
 import { CollectionList } from './CollectionList'
 
 export const SearchResults = () => {
-    const { isLoading: isLoadingCloud } = useAppSelector((state) => state.cloud)
+    const { isLoaded } = useAppSelector((state) => state.cloud)
+    const context = useAppContext()
     const {
         data: results,
         error,
         isLoading,
-        refetch,
-    } = useQuery<ICollection[], any>(['collections'], () =>
-        window.LinkVault.context.collections.getAll()
-    )
+    } = useQuery<ICollection[], any>(['collections'], () => context.collections.getAll(), {
+        enabled: isLoaded,
+    })
 
     const navigate = useNavigate()
     const location = useLocation()
     const state = (location.state as CollectionsViewState) ?? {}
-
-    useEffect(() => {
-        if (!isLoadingCloud) {
-            refetch()
-        }
-    }, [isLoadingCloud])
 
     const handleItemClick = async (i: number) => {
         if (!results) return
@@ -58,7 +53,7 @@ export const SearchResults = () => {
         )
     }
 
-    if (isLoading || isLoadingCloud || !results) {
+    if (isLoading || !isLoaded || !results) {
         return (
             <div className='flex-grow-1'>
                 <CollectionList onItemClick={handleItemClick} />

@@ -1,12 +1,11 @@
-import { setCloudLoading } from '../popup/store/cloud'
+import { createStore } from '../popup/store'
 import { getLinkVault } from './services/LinkVault'
 
 const program = getLinkVault()
 window.LinkVault = program
 window.context = program.context
+window.store = createStore()
 
 program.loadData().then(async () => {
-    window.store.dispatch(setCloudLoading(true))
     await program.syncCloud()
-    window.store.dispatch(setCloudLoading(false))
 })

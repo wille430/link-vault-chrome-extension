@@ -78,6 +78,7 @@ const createConfig = () => {
 
     if (Boolean(process.env.WATCH) === true) {
         config.mode = "development"
+        config.watch = true
         config.plugins.push(
             new ExtensionReloader({
                 entries: {

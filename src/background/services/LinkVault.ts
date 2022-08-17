@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { ICollection } from '../../shared/entities/ICollection'
 import { ILink } from '../../shared/entities/ILink'
+import { setCloudLoaded, setCloudSyncState } from '../../shared/store/cloud'
 import { getStorage } from '../../shared/utils/storage'
 import { AppContext } from '../AppContext'
 import { DATA_KEY } from '../constants'
@@ -23,7 +24,6 @@ export const getLinkVault = (): LinkVault => {
 
 export class LinkVault {
     dropboxService: DropboxService
-    data?: ApplicationData
     context: AppContext
 
     constructor() {
@@ -33,9 +33,12 @@ export class LinkVault {
 
     _overwrite = false
     async loadData() {
+        window.store.dispatch(setCloudLoaded(false))
+
         await this.dropboxService.authenticate()
         let data: ApplicationData
 
+        window.store.dispatch(setCloudSyncState(true))
         const objString = await this.dropboxService.loadFile()
         try {
             data = JSON.parse(objString)
@@ -57,27 +60,31 @@ export class LinkVault {
             await chrome.storage.sync.set({
                 [DATA_KEY]: data,
             })
-            this.data = data
         } else {
             // merge
+            data = _.merge(data, existingData) as ApplicationData
             await chrome.storage.sync.set({
-                [DATA_KEY]: _.merge(data, existingData) as ApplicationData,
+                [DATA_KEY]: data,
             })
-            this.data = _.merge(data, existingData)
         }
         console.log(
             `[${LinkVault.name}] Loaded ${
-                JSON.stringify(this.data).length
+                JSON.stringify(data).length
             }B to memory after merge/overwrite with cloud`
         )
 
         await this.context.initialize()
+        window.store.dispatch(setCloudSyncState(false))
     }
 
     private _syncCloudTimer = setTimeout(() => this._syncCloud.apply(this), 1000)
     private async _syncCloud() {
         console.log(`[LinkVault] Syncing changes with cloud...`)
-        await this.dropboxService.syncChanges(this.data)
+        window.store.dispatch(setCloudSyncState(true))
+        await this.dropboxService.syncChanges(
+            await getStorage(DATA_KEY).then((res) => res[DATA_KEY])
+        )
+        window.store.dispatch(setCloudSyncState(false))
     }
     async syncCloud() {
         clearTimeout(this._syncCloudTimer)
@@ -89,16 +96,12 @@ export class LinkVault {
      * @param path - Path to a nested object key. E.g. /users
      * @returns
      */
-    getData(path?: string) {
-        if (!this.data) {
-            throw new Error('Data has not been loaded yet!')
-        }
+    async getData(path?: string) {
+        let data = await getStorage(DATA_KEY).then((res) => res[DATA_KEY])
 
         if (!path) {
-            return this.data as ApplicationData
+            return data
         }
-
-        let data: any = { ...this.data }
 
         for (const key of path.split('/')) {
             if (!data[key]) {

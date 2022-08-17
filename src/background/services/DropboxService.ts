@@ -6,10 +6,11 @@ import {
     DEFAULT_DATA_PATH,
     REDIRECT_URL,
 } from '../constants'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import _ from 'lodash'
-import { getStorage } from '../../shared/utils/storage'
+import { getStorage, setStorage } from '../../shared/utils/storage'
 import { ApplicationData } from './LinkVault'
+import { setCloudConnectionState } from '../../shared/store/cloud'
 
 export const initialAppData: ApplicationData = {
     links: [],
@@ -22,18 +23,31 @@ export class DropboxService {
     expires?: Date | undefined
 
     async authenticate() {
-        return new Promise<void>(async (resolve) => {
+        return new Promise<void>(async (resolve, reject) => {
             await this.loadCredentials()
+            window.store.dispatch(setCloudConnectionState(false))
 
-            if (this.token && this.expires && Date.now() > this.expires.getTime()) {
-                try {
-                    await this.refreshToken()
-                    return resolve()
-                } catch (e) {}
-            }
+            console.log({
+                token: this.token,
+                expires: this.expires,
+            })
 
             if (this.token) {
-                return resolve()
+                if (this.expires && isNaN(this.expires.getTime())) {
+                    await this.clearCredentials()
+                } else if (this.expires && Date.now() > this.expires.getTime()) {
+                    try {
+                        await this.refreshToken()
+                        window.store.dispatch(setCloudConnectionState(true))
+                        return resolve()
+                    } catch (e) {
+                        await this.clearCredentials()
+                    }
+                } else {
+                    // Non expired token
+                    window.store.dispatch(setCloudConnectionState(true))
+                    return resolve()
+                }
             }
 
             const url = generateAuthorisationURL(CLIENT_ID, REDIRECT_URL)
@@ -56,9 +70,11 @@ export class DropboxService {
 
             const cleanup = () => {
                 chrome.tabs.onUpdated.removeListener(fetchAccessToken)
+                window.store.dispatch(setCloudConnectionState(true))
                 resolve()
             }
             chrome.tabs.onUpdated.addListener(fetchAccessToken)
+            window.store.dispatch(setCloudConnectionState(true))
         })
     }
 
@@ -92,19 +108,32 @@ export class DropboxService {
 
     async refreshToken() {
         console.log('Refreshing token...')
-        const { data } = await axios.post(
-            'https://api.dropbox.com/oauth2/token',
-            {
-                grant_type: 'refresh_token',
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${this.token}`,
+        const data = await axios
+            .post(
+                'https://api.dropbox.com/oauth2/token',
+                {
+                    grant_type: 'refresh_token',
                 },
-            }
-        )
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.token}`,
+                    },
+                }
+            )
+            .then((res) => res.data)
+            .catch(async (e: AxiosError) => {
+                if (e.response && e.response.status === 401) {
+                    await this.clearCredentials()
+                    await this.authenticate()
+                }
+                return undefined
+            })
 
-        this.token = data.access_token
+        if (!data) {
+            return
+        }
+
+        if (data) this.token = data.access_token
         this.expires = data.expires_in
             ? new Date(Date.now() + parseInt(data.expires_in) * 1000)
             : undefined
@@ -118,7 +147,7 @@ export class DropboxService {
 
         await chrome.storage.local.set({
             ACCESS_TOKEN: this.token,
-            ACCESS_TOKEN_EXPIRES: this.expires,
+            ACCESS_TOKEN_EXPIRES: this.expires?.toISOString(),
         })
     }
 
@@ -126,13 +155,21 @@ export class DropboxService {
         const data = await getStorage([ACCESS_TOKEN, ACCESS_TOKEN_EXPIRES])
 
         this.token = data[ACCESS_TOKEN]
-        this.expires = data[ACCESS_TOKEN_EXPIRES]
+        this.expires = new Date(data[ACCESS_TOKEN_EXPIRES])
             ? new Date(Date.now() + parseInt(data[ACCESS_TOKEN_EXPIRES]) * 1000)
             : undefined
 
         if (this.token) this.client = new DropboxClient(this.token)
 
         console.log(`Loaded credentials ${JSON.stringify(data)}`)
+    }
+
+    async clearCredentials() {
+        await setStorage(ACCESS_TOKEN, undefined)
+        await setStorage(ACCESS_TOKEN_EXPIRES, undefined)
+
+        this.token = undefined
+        this.expires = undefined
     }
 }
 

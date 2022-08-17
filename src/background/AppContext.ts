@@ -1,3 +1,4 @@
+import { setCloudLoaded } from '../shared/store/cloud'
 import { CollectionsRepository } from './repositories/CollectionsRepository'
 import { LinksRepository } from './repositories/LinksRepository'
 import { Repository } from './repositories/Repository'
@@ -38,7 +39,8 @@ export class AppContext {
     }
 
     async initialize() {
-        await Promise.allSettled([this.links.loadData(), this.collections.loadData()])
+        await Promise.all([this.links.loadData(), this.collections.loadData()])
+        window.store.dispatch(setCloudLoaded(true))
     }
 
     async saveAllChanges() {
